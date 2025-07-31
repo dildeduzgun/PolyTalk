@@ -1,0 +1,525 @@
+{% extends "base.html" %}
+
+{% block title %}Sohbet Analizi - Polytalk{% endblock %}
+
+{% block content %}
+<div class="analysis-container">
+    <div class="analysis-header">
+        <div class="header-content">
+            <h1>📊 Sohbet Analizi</h1>
+            <p class="analysis-subtitle">AI destekli detaylı dil öğrenme geri bildirimi</p>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-number">7</span>
+                    <span class="stat-label">Analiz Kategorisi</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">AI</span>
+                    <span class="stat-label">Destekli</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Detaylı</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Öneri</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if analysis %}
+    <div class="analysis-grid">
+        <!-- Kelime Hazinesi -->
+        <div class="analysis-card vocabulary-card">
+            <div class="card-header">
+                <div class="card-icon">📚</div>
+                <div class="card-title-section">
+                    <h3>Kelime Hazinesi</h3>
+                    <span class="card-subtitle">Vocabulary Analysis</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.vocabulary or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+
+        <!-- Gramer -->
+        <div class="analysis-card grammar-card">
+            <div class="card-header">
+                <div class="card-icon">✏️</div>
+                <div class="card-title-section">
+                    <h3>Gramer</h3>
+                    <span class="card-subtitle">Grammar Analysis</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.grammar or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+
+        <!-- Telaffuz -->
+        <div class="analysis-card pronunciation-card">
+            <div class="card-header">
+                <div class="card-icon">🎤</div>
+                <div class="card-title-section">
+                    <h3>Telaffuz</h3>
+                    <span class="card-subtitle">Pronunciation Guide</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.pronunciation or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+
+        <!-- Alternatif İfadeler -->
+        <div class="analysis-card alternatives-card">
+            <div class="card-header">
+                <div class="card-icon">💡</div>
+                <div class="card-title-section">
+                    <h3>Alternatif İfadeler</h3>
+                    <span class="card-subtitle">Better Alternatives</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.alternatives or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+
+        <!-- Konuşma Akıcılığı -->
+        <div class="analysis-card fluency-card">
+            <div class="card-header">
+                <div class="card-icon">🚀</div>
+                <div class="card-title-section">
+                    <h3>Konuşma Akıcılığı</h3>
+                    <span class="card-subtitle">Speaking Fluency</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.fluency or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+
+        <!-- İletişim Becerileri -->
+        <div class="analysis-card communication-card">
+            <div class="card-header">
+                <div class="card-icon">🤝</div>
+                <div class="card-title-section">
+                    <h3>İletişim Becerileri</h3>
+                    <span class="card-subtitle">Communication Skills</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.communication or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+
+        <!-- Öneriler -->
+        <div class="analysis-card recommendations-card">
+            <div class="card-header">
+                <div class="card-icon">🎯</div>
+                <div class="card-title-section">
+                    <h3>Öğrenme Önerileri</h3>
+                    <span class="card-subtitle">Learning Recommendations</span>
+                </div>
+            </div>
+            <div class="card-content">
+                <div class="content-text">{{ analysis.recommendations or 'Analiz yapılamadı.' }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="analysis-actions">
+        <div class="action-buttons">
+            <a href="{{ url_for('chatbot') }}" class="btn btn-primary">
+                <span class="btn-icon">💬</span>
+                <span class="btn-text">Genel Sohbet Başlat</span>
+            </a>
+            <a href="{{ url_for('chatbot_food') }}" class="btn btn-primary">
+                <span class="btn-icon">🍽️</span>
+                <span class="btn-text">Restaurant Sohbeti</span>
+            </a>
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                <span class="btn-icon">🏠</span>
+                <span class="btn-text">Ana Sayfaya Dön</span>
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="no-analysis">
+        <div class="no-analysis-icon">🤔</div>
+        <h3>Analiz Bulunamadı</h3>
+        <p>Henüz bir sohbet analizi yapılmamış. Önce chatbot ile konuşun!</p>
+        <a href="{{ url_for('chatbot') }}" class="btn btn-primary">Chatbot'a Git</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+/* Tamamen lacivert arka plan */
+body {
+    background: #0a0e1a !important;
+    margin: 0;
+    padding: 0;
+}
+
+.analysis-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100vh;
+    background: #0a0e1a;
+    color: white;
+    position: relative;
+}
+
+/* Arka plan deseni */
+.analysis-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.analysis-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+}
+
+.header-content {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.analysis-header h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #3b82f6, #10b981, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    text-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+}
+
+.analysis-subtitle {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    margin: 0 0 2rem 0;
+    font-weight: 500;
+}
+
+.header-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    min-width: 120px;
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #3b82f6;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    font-weight: 500;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.analysis-card {
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.analysis-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--card-color), transparent);
+    opacity: 0.8;
+}
+
+.analysis-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    border-color: var(--card-color);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-right: 1.5rem;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.card-title-section {
+    flex: 1;
+}
+
+.card-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-content {
+    position: relative;
+}
+
+.content-text {
+    margin: 0;
+    line-height: 1.8;
+    color: #e2e8f0;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: justify;
+}
+
+/* Kart renkleri */
+.vocabulary-card {
+    --card-color: #3b82f6;
+}
+
+.grammar-card {
+    --card-color: #ef4444;
+}
+
+.pronunciation-card {
+    --card-color: #f59e0b;
+}
+
+.alternatives-card {
+    --card-color: #10b981;
+}
+
+.fluency-card {
+    --card-color: #06b6d4;
+}
+
+.communication-card {
+    --card-color: #f97316;
+}
+
+.recommendations-card {
+    --card-color: #8b5cf6;
+    grid-column: 1 / -1;
+}
+
+.analysis-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+    color: white;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #2563eb, #1e40af);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+.btn-text {
+    font-weight: 600;
+}
+
+.no-analysis {
+    text-align: center;
+    padding: 6rem 2rem;
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.no-analysis-icon {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3));
+}
+
+.no-analysis h3 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #f8fafc;
+    font-weight: 700;
+}
+
+.no-analysis p {
+    color: #94a3b8;
+    margin-bottom: 3rem;
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .analysis-container {
+        padding: 1rem;
+    }
+    
+    .analysis-header h1 {
+        font-size: 2.2rem;
+    }
+    
+    .header-stats {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .stat-item {
+        min-width: 150px;
+    }
+    
+    .analysis-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .analysis-card {
+        padding: 1.5rem;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .card-icon {
+        margin-right: 0;
+    }
+}
+</style>
+{% endblock %} 

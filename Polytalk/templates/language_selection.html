@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="language-selection-container">
+    <div class="language-selection-header">
+        <h1>Dil Seçimi</h1>
+        <p>Öğrenmek istediğiniz dili ve mevcut seviyenizi seçin</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('dil_secimi') }}" class="language-selection-form">
+        <div class="language-grid">
+            <div class="language-card">
+                <input type="radio" name="hedef_dil" id="english" value="english" required>
+                <label for="english">
+                    <img src="{{ url_for('static', filename='images/flags/uk.png') }}" alt="İngilizce">
+                    <span>İngilizce</span>
+                </label>
+            </div>
+
+            <div class="language-card">
+                <input type="radio" name="hedef_dil" id="german" value="german">
+                <label for="german">
+                    <img src="{{ url_for('static', filename='images/flags/germany.png') }}" alt="Almanca">
+                    <span>Almanca</span>
+                </label>
+            </div>
+
+            <div class="language-card">
+                <input type="radio" name="hedef_dil" id="spanish" value="spanish">
+                <label for="spanish">
+                    <img src="{{ url_for('static', filename='images/flags/spain.png') }}" alt="İspanyolca">
+                    <span>İspanyolca</span>
+                </label>
+            </div>
+
+            <div class="language-card">
+                <input type="radio" name="hedef_dil" id="french" value="french">
+                <label for="french">
+                    <img src="{{ url_for('static', filename='images/flags/france.png') }}" alt="Fransızca">
+                    <span>Fransızca</span>
+                </label>
+            </div>
+
+            <div class="language-card">
+                <input type="radio" name="hedef_dil" id="italian" value="italian">
+                <label for="italian">
+                    <img src="{{ url_for('static', filename='images/flags/italy.png') }}" alt="İtalyanca">
+                    <span>İtalyanca</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="level-selection">
+            <h2>Mevcut Seviyeniz</h2>
+            <div class="level-options">
+                <div class="level-option">
+                    <input type="radio" name="seviye" id="beginner" value="beginner" required>
+                    <label for="beginner">
+                        <span class="level-title">Başlangıç</span>
+                        <span class="level-description">Daha önce hiç öğrenmedim</span>
+                    </label>
+                </div>
+
+                <div class="level-option">
+                    <input type="radio" name="seviye" id="elementary" value="elementary">
+                    <label for="elementary">
+                        <span class="level-title">Temel</span>
+                        <span class="level-description">Basit cümleler kurabiliyorum</span>
+                    </label>
+                </div>
+
+                <div class="level-option">
+                    <input type="radio" name="seviye" id="intermediate" value="intermediate">
+                    <label for="intermediate">
+                        <span class="level-title">Orta</span>
+                        <span class="level-description">Günlük konuşmaları anlayabiliyorum</span>
+                    </label>
+                </div>
+
+                <div class="level-option">
+                    <input type="radio" name="seviye" id="advanced" value="advanced">
+                    <label for="advanced">
+                        <span class="level-title">İleri</span>
+                        <span class="level-description">Akıcı konuşabiliyorum</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-button">
+            <i class="fas fa-arrow-right"></i>
+            Devam Et
+        </button>
+    </form>
+</div>
+{% endblock %} 

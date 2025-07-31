@@ -1,0 +1,522 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="duo-layout">
+    <!-- Sidebar -->
+    <aside class="duo-sidebar">
+        <nav class="duo-nav">
+            <a href="{{ url_for('index') }}" class="duo-nav-link active"><i class="fas fa-home"></i> <span>Öğren</span></a>
+            <a href="{{ url_for('kullanici.my_cards') }}" class="duo-nav-link"><i class="fas fa-clone"></i> <span>Kartlarım</span></a>
+            <a href="{{ url_for('leaderboard') }}" class="duo-nav-link"><i class="fas fa-trophy"></i> <span>Puan Tabloları</span></a>
+            <a href="{{ url_for('tasks') }}" class="duo-nav-link"><i class="fas fa-bolt"></i> <span>Görevler</span></a>
+            <a href="#" class="duo-nav-link"><i class="fas fa-store"></i> <span>Mağaza</span></a>
+            <a href="{{ url_for('kullanici.profile') }}" class="duo-nav-link"><i class="fas fa-user"></i> <span>Profil</span></a>
+            <a href="#" class="duo-nav-link"><i class="fas fa-ellipsis-h"></i> <span>Daha Fazla</span></a>
+            <div class="nav-divider"></div>
+            <a href="{{ url_for('kullanici.logout') }}" class="duo-nav-link logout-link"><i class="fas fa-sign-out-alt"></i> <span>Çıkış</span></a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="duo-main">
+        <div class="skill-tree-container long-tree">
+            <h2>Ders Haritası</h2>
+            <div class="skill-tree-long">
+                <!-- Bölüm 1: Selamlaşma -->
+                <div class="tree-section">
+                    <div class="tree-section-title">Başlangıç</div>
+                    <div class="tree-row">
+                        <!-- Selamlaşma -->
+                        <div class="tree-node-group">
+                          <style>
+.greeting-test-cards {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.greeting-test-card {
+  background: linear-gradient(135deg, #2196f3 0%, #21cbf3 100%);
+  color: #fff;
+  border-radius: 22px;
+  box-shadow: 0 6px 24px rgba(33,150,243,0.13);
+  padding: 28px 22px 20px 22px;
+  min-width: 170px;
+  max-width: 200px;
+  text-align: center;
+  transition: transform 0.22s, box-shadow 0.22s, border 0.22s;
+  cursor: pointer;
+  position: relative;
+  border: 2.5px solid transparent;
+  overflow: hidden;
+  flex: 1 1 170px;
+}
+.greeting-test-card:hover {
+  transform: translateY(-10px) scale(1.06);
+  box-shadow: 0 12px 36px rgba(33,150,243,0.22);
+  border: 2.5px solid #fff;
+  z-index: 2;
+}
+.greeting-test-card .greeting-icon-bg {
+  background: rgba(255,255,255,0.18);
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.10);
+}
+.greeting-test-card .greeting-icon {
+  font-size: 2.3em;
+  color: #fff;
+}
+.greeting-test-card .greeting-title {
+  font-size: 1.18em;
+  font-weight: bold;
+  margin-bottom: 7px;
+  letter-spacing: 0.01em;
+}
+.greeting-test-card .greeting-difficulty {
+  font-size: 1em;
+  font-weight: 600;
+  opacity: 0.93;
+  margin-bottom: 2px;
+  letter-spacing: 0.01em;
+  padding: 3px 0 0 0;
+}
+.greeting-test-card .greeting-diff-1 { color: #fff176; }
+.greeting-test-card .greeting-diff-2 { color: #b2ff59; }
+.greeting-test-card .greeting-diff-3 { color: #ffd54f; }
+.greeting-test-card .greeting-diff-4 { color: #ff8a65; }
+.greeting-test-card .greeting-diff-5 { color: #e57373; }
+@media (max-width: 900px) {
+  .greeting-test-cards { justify-content: center; gap: 14px; }
+  .greeting-test-card { min-width: 120px; max-width: 160px; padding: 18px 8px 12px 8px; }
+  .greeting-test-card .greeting-title { font-size: 1em; }
+}
+</style>
+<div class="greeting-test-cards">
+  {% set diff_labels = ['Kolay', 'Günlük', 'Orta', 'İleri', 'Zor', 'Chatbot'] %}
+  {% set diff_icons = ['fa-star', 'fa-comments', 'fa-lightbulb', 'fa-graduation-cap', 'fa-fire', 'fa-robot'] %}
+  {% for i in range(1,7) %}
+    {% if i < 6 %}
+      <a href="{{ url_for('greeting_test', test_no=i) }}" style="text-decoration:none;">
+        <div class="greeting-test-card">
+          <span class="greeting-icon-bg"><i class="fas {{ diff_icons[i-1] }} greeting-icon"></i></span>
+          <div class="greeting-title">Selamlaşma Test {{ i }}</div>
+          <div class="greeting-difficulty greeting-diff-{{ i }}">{{ diff_labels[i-1] }}</div>
+        </div>
+      </a>
+    {% else %}
+      <a href="{{ url_for('chatbot') }}" style="text-decoration:none;">
+        <div class="greeting-test-card" style="background: linear-gradient(135deg, #7b1fa2 0%, #e040fb 100%);">
+          <span class="greeting-icon-bg"><i class="fas {{ diff_icons[i-1] }} greeting-icon"></i></span>
+          <div class="greeting-title">Chatbot ile Sohbet</div>
+          <div class="greeting-difficulty" style="color:#fffde7;">Günlük Konuşma</div>
+        </div>
+      </a>
+    {% endif %}
+  {% endfor %}
+</div>
+                        </div>
+                        <div class="tree-connector-horizontal"></div>
+                    </div>
+                </div>
+                <!-- Bölüm 2: Yiyecekler -->
+                <div class="tree-section">
+                  <div class="tree-section-title">Yemek adlarını söyle</div>
+                  <style>
+.food-test-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+  justify-content: center;
+  align-items: flex-start;
+}
+@media (max-width: 700px) {
+  .food-test-cards {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+</style>
+<div class="food-test-cards">
+  {% set food_labels = ['Kolay', 'Günlük', 'Orta', 'İleri', 'Zor', 'Chatbot'] %}
+  {% set food_icons = ['fa-apple-alt', 'fa-carrot', 'fa-hamburger', 'fa-pizza-slice', 'fa-pepper-hot', 'fa-robot'] %}
+  {% for i in range(1,7) %}
+    {% if i < 6 %}
+      <a href="{{ url_for('quiz_food_test', test_no=i) }}" style="text-decoration:none;">
+        <div class="greeting-test-card">
+          <span class="greeting-icon-bg"><i class="fas {{ food_icons[i-1] }} greeting-icon"></i></span>
+          <div class="greeting-title">Yemek Test {{ i }}</div>
+          <div class="greeting-difficulty greeting-diff-{{ i }}">{{ food_labels[i-1] }}</div>
+        </div>
+      </a>
+    {% else %}
+      <a href="{{ url_for('chatbot_food') }}" style="text-decoration:none;">
+        <div class="greeting-test-card" style="background: linear-gradient(135deg, #43a047 0%, #b2ff59 100%);">
+          <span class="greeting-icon-bg"><i class="fas {{ food_icons[i-1] }} greeting-icon"></i></span>
+          <div class="greeting-title">Yemek Sohbeti</div>
+          <div class="greeting-difficulty" style="color:#fffde7;">Chatbot</div>
+        </div>
+      </a>
+    {% endif %}
+  {% endfor %}
+</div>
+                </div>
+                <div class="tree-divider"></div>
+                <!-- Bölüm 3: Adisyon -->
+                <div class="tree-section">
+                    <div class="tree-section-title">Restoranda adisyonu iste</div>
+                    <div class="tree-row">
+                        <div class="tree-node">
+                            <a href="{{ url_for('quiz', topic='Restoranda adisyonu iste') }}">
+                                <button class="tree-btn"><i class="fas fa-receipt"></i></button>
+                            </a>
+                            <div class="tree-label">Adisyon</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tree-divider"></div>
+                <!-- Bölüm 4: Yemek Bul -->
+                <div class="tree-section">
+                    <div class="tree-section-title">Restoranda yemek bul</div>
+                    <div class="tree-row">
+                        <div class="tree-node">
+                            <a href="{{ url_for('quiz', topic='Restoranda yemek bul') }}">
+                                <button class="tree-btn"><i class="fas fa-search"></i></button>
+                            </a>
+                            <div class="tree-label">Yemek Bul</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tree-divider"></div>
+                <!-- Bölüm 5: İçecekler -->
+                <div class="tree-section">
+                    <div class="tree-section-title">İçecek siparişi ver</div>
+                    <div class="tree-row">
+                        <div class="tree-node">
+                            <a href="{{ url_for('quiz', topic='İçecek siparişi ver') }}">
+                                <button class="tree-btn"><i class="fas fa-coffee"></i></button>
+                            </a>
+                            <div class="tree-label">İçecekler</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Sağda puan tablosu ve günlük görevler -->
+    <aside class="duo-rightbar">
+        <div class="duo-box score-box">
+            <div class="duo-box-title">Puanım</div>
+            <div class="duo-box-content score-content">
+                {{ ilerleme.toplam_xp if ilerleme else 0 }} XP
+            </div>
+        </div>
+        <div class="duo-box tasks-box">
+            <div class="duo-box-title">Günlük Görevler <span class="duo-link"><a href="{{ url_for('tasks') }}">TÜMÜNÜ GÖSTER</a></span></div>
+            <div class="duo-box-content">
+              {% for görev in görevler[:2] %}
+                <div class="duo-task">
+                  <span class="duo-task-emoji">
+                    {% if 'xp' in görev.görev_tipi %}⚡{% elif 'ders' in görev.görev_tipi %}📘{% elif 'kelime' in görev.görev_tipi %}📝{% elif 'streak' in görev.görev_tipi %}🔥{% else %}🎯{% endif %}
+                  </span>
+                  <span class="task-text">{{ görev.ad }}</span>
+                  <div class="duo-progress-bar">
+                    <div class="duo-progress" style="width: {{ ((görev.xp_ödülü or 0) / (görev.hedef or 1) * 100) | int if görev.hedef else 0 }}%"></div>
+                  </div>
+                  <span class="duo-task-reward" title="Ödül">🎁</span>
+                </div>
+              {% else %}
+                <div class="duo-task locked">
+                  <span class="duo-task-emoji">🔒</span> Yakında yeni görevlerin kilidi açılacak
+                </div>
+              {% endfor %}
+            </div>
+        </div>
+    </aside>
+</div>
+
+<style>
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 100vh;
+}
+.duo-layout { display: flex; min-height: 100vh; }
+.duo-sidebar {
+    width: 220px;
+    background: #16202a;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem 1rem 1rem 2rem;
+    min-height: 100vh;
+    border-right: 1px solid #222c3a;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 10;
+    overflow-y: auto;
+}
+.duo-nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.duo-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.9rem 1.2rem;
+    border-radius: 14px;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+.duo-nav-link.active, .duo-nav-link:focus {
+    background: #0f172a;
+    color: #7cff3a;
+    border: 2px solid #7cff3a;
+}
+.duo-nav-link:hover {
+    background: #263043;
+    color: #7cff3a;
+}
+.duo-main {
+    flex: 1;
+    padding: 2rem;
+    min-width: 0;
+    margin-left: 220px;
+    margin-right: 350px;
+    display: flex;
+    justify-content: center;
+}
+.duo-rightbar {
+    width: 300px;
+    background: #16202a;
+    color: #fff;
+    padding: 1.5rem;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-left: 1px solid #222c3a;
+}
+.duo-box {
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.score-box {
+    max-width: 150px;
+    margin: 0 auto 1rem auto;
+    text-align: center;
+    padding: 0.8rem;
+}
+.score-content {
+    font-size: 1.5rem !important;
+    color: #7cff3a;
+    font-weight: 700;
+    text-align: center;
+    padding: 0.4rem;
+    background: rgba(124, 255, 58, 0.1);
+    border-radius: 8px;
+    margin-top: 0.3rem;
+}
+.tasks-box {
+    padding: 0.8rem;
+}
+.duo-box-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.duo-link a {
+    color: #7cff3a;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.duo-task {
+    background: #263043;
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.task-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.duo-task-emoji {
+    font-size: 1rem;
+}
+.duo-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: #1e293b;
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 0.6rem;
+}
+.duo-progress {
+    height: 100%;
+    background: #7cff3a;
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+.duo-task-reward {
+    font-size: 1rem;
+    cursor: help;
+}
+.duo-task.locked {
+    opacity: 0.7;
+    background: #1e293b;
+    font-size: 0.8rem;
+}
+.skill-tree-container {
+    background: #1e293b;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    max-width: 800px;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.skill-tree-container h2 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.skill-tree-long {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+.tree-section {
+    background: #16202a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+.tree-section:hover {
+    transform: translateY(-2px);
+}
+.tree-section-title {
+    color: #7cff3a;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.tree-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+.tree-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+.tree-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: none;
+    background: #263043;
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.tree-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.tree-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.tree-btn.completed {
+    background: #7cff3a;
+    color: #0f172a;
+    box-shadow: 0 0 15px rgba(124, 255, 58, 0.5);
+}
+.tree-label {
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    font-weight: 500;
+}
+.tree-connector-horizontal {
+    flex: 1;
+    height: 2px;
+    background: #263043;
+    max-width: 100px;
+}
+.tree-divider {
+    height: 2px;
+    background: #263043;
+    margin: 0 1rem;
+    width: 80%;
+    max-width: 400px;
+}
+.nav-divider {
+    height: 1px;
+    background: #222c3a;
+    margin: 1rem 0;
+    width: 100%;
+}
+.logout-link {
+    margin-top: auto;
+    color: #ff4d4d !important;
+    font-size: 0.9rem !important;
+    padding: 0.7rem 1.2rem !important;
+}
+.logout-link:hover {
+    background: rgba(255, 77, 77, 0.1) !important;
+    color: #ff4d4d !important;
+}
+.logout-link i {
+    font-size: 1rem;
+}
+</style>
+{% endblock %} 

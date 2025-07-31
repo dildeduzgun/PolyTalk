@@ -1,0 +1,449 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(135deg, #ece5dd 0%, #d1f8ce 100%) !important;
+}
+
+.chatbot-container {
+  max-width: 520px;
+  margin: 20px auto 0 auto;
+  background: #f7fdf6;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(33,150,243,0.10);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 700px;
+  border: 1.5px solid #b2dfdb;
+}
+
+.chatbot-header {
+  background: #075e54;
+  color: #fff;
+  padding: 18px 20px 10px 20px;
+  border-radius: 18px 18px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #25d366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(7,94,84,0.10);
+}
+
+.header-title {
+  font-size: 1.18em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 18px 0 0;
+  padding: 8px 0 0 0;
+}
+
+.timer-label {
+  font-weight: 500;
+  color: #075e54;
+  font-size: 1em;
+}
+
+.timer-display {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #25d366;
+  background: #fff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #25d366;
+  min-width: 48px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.chatbot-desc {
+  text-align: center;
+  color: #075e54;
+  margin: 10px 0 8px 0;
+  font-size: 1.01em;
+  background: #e7fbe9;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.chat-history {
+  flex: 1;
+  min-height: 300px;
+  max-height: 480px;
+  margin: 0 0 0 0;
+  overflow-y: auto;
+  padding: 20px 16px 12px 16px;
+  background: #ece5dd;
+  border-radius: 0 0 0 0;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.chat-user {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.chat-bot {
+  justify-content: flex-start;
+  margin-right: auto;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3em;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 1px 4px rgba(7,94,84,0.08);
+}
+
+.avatar-user {
+  background: #25d366;
+}
+
+.avatar-bot {
+  background: #075e54;
+}
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 1.05em;
+  background: #fff;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+  position: relative;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.chat-user .chat-bubble {
+  background: #dcf8c6;
+  color: #222;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 16px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  margin-right: 2px;
+  order: 1;
+}
+
+.chat-bot .chat-bubble {
+  background: #fff;
+  color: #222;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 16px;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  margin-left: 2px;
+  order: 2;
+}
+
+.chat-form {
+  display: flex;
+  gap: 8px;
+  padding: 0 18px 18px 18px;
+  background: #f7fdf6;
+  border-radius: 0 0 18px 18px;
+  border-top: 1.5px solid #e0e0e0;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 24px;
+  border: 1.5px solid #b2dfdb;
+  font-size: 1.05em;
+  outline: none;
+  background: #fff;
+  transition: border 0.2s;
+}
+.chat-input:focus {
+  border: 1.5px solid #25d366;
+}
+
+.chat-send-btn {
+  background: #25d366;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.4em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+}
+.chat-send-btn:hover { background: #128c7e; }
+
+.chat-completed {
+  text-align: center;
+  color: #43a047;
+  font-size: 1.15em;
+  margin-top: 18px;
+  font-weight: bold;
+}
+.chat-fail {
+  text-align: center;
+  color: #e53935;
+  font-size: 1.05em;
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+.analysis-button-container {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.analysis-btn {
+  display: inline-block;
+  background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+  color: white;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border: none;
+  cursor: pointer;
+}
+
+.analysis-btn:hover {
+  background: linear-gradient(45deg, #2563eb, #1e40af);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  color: white;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .chatbot-container {
+    margin: 10px;
+    min-height: 80vh;
+  }
+  
+  .chatbot-header {
+    padding: 15px;
+  }
+  
+  .header-title {
+    font-size: 1.1em;
+  }
+  
+  .chat-history {
+    padding: 15px;
+    max-height: 50vh;
+  }
+  
+  .chat-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    font-size: 0.9em;
+  }
+  
+  .chat-input {
+    padding: 12px 16px;
+    font-size: 0.9em;
+  }
+  
+  .chat-send-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2em;
+  }
+  
+  .analysis-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+</style>
+
+<div class="chatbot-container">
+  <div class="chatbot-header">
+    <div class="header-avatar">{% if food_mode %}🍽️{% else %}🤖{% endif %}</div>
+    <div class="header-title">{% if food_mode %}Restaurant Chat{% else %}Polytalk Chat{% endif %}</div>
+  </div>
+  <div class="timer-container">
+    <div class="timer-label">Kalan Süre:</div>
+    <div class="timer-display" id="timer" data-time-remaining="{% if time_remaining %}{{ time_remaining }}{% else %}180{% endif %}">
+      {% if time_remaining %}
+        {{ (time_remaining // 60) }}:{{ '%02d' % (time_remaining % 60) }}
+      {% else %}
+        3:00
+      {% endif %}
+    </div>
+  </div>
+  <div class="chatbot-desc">
+    {% if food_mode %}
+      Restoranda garson olarak çalışıyorsun. Müşteri ile 3 dakika boyunca yemek siparişi al. 
+      Süre bitene kadar sohbet et, bölümü tamamlayabilirsin.
+      <br><small>💡 İpucu: Müşteri gibi davran, yemek siparişi ver, garsonun sorularına cevap ver!</small>
+    {% else %}
+      Bot ile serbestçe sohbet et. 3 dakika boyunca doğal bir konuşma yap. 
+      Süre bitene kadar sohbet et, bölümü tamamlayabilirsin.
+      <br><small>💡 İpucu: Basit ve anlamlı cevaplar ver, bot'un sorularına cevap ver!</small>
+    {% endif %}
+  </div>
+  <div class="chat-history" id="chat-history">
+    {% for msg in chat_history %}
+      <div class="chat-msg chat-{{ msg.role }}">
+        {% if msg.role == 'user' %}
+          <div class="chat-bubble">{{ msg.text }}</div>
+          <div class="avatar avatar-user">{{ current_user.kullanici_adi[0]|upper if current_user.kullanici_adi else 'U' }}</div>
+        {% else %}
+          <div class="avatar avatar-bot">{% if food_mode %}👨‍🍳{% else %}🤖{% endif %}</div>
+          <div class="chat-bubble">{{ msg.text }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% if not completed %}
+    <form method="POST" class="chat-form" id="chat-form">
+      <input type="text" name="user_message" placeholder="Mesajınızı yazın..." autocomplete="off" required class="chat-input" id="chat-input" />
+      <button type="submit" class="chat-send-btn" id="send-btn"><i class="fas fa-paper-plane"></i></button>
+    </form>
+    {% if gpt_feedback %}
+      {% if 'HAYIR' in gpt_feedback.upper() %}
+        <div class="chat-fail">Sohbetin yeterince çeşitli veya anlamlı bulunmadı. Lütfen daha doğal ve çeşitli cevaplar vererek tekrar dene.</div>
+      {% endif %}
+    {% endif %}
+  {% else %}
+    <div class="chat-completed">Tebrikler! Sohbetin başarılı bulundu ve bu bölümü tamamladın 🎉</div>
+    
+    <div class="analysis-button-container">
+      {% if session['chatbot_analysis_id'] %}
+        <a href="{{ url_for('chatbot_analysis') }}" class="analysis-btn">
+          📊 Detaylı Analizi Görüntüle
+        </a>
+      {% else %}
+        {% if food_mode %}
+          <form method="POST" action="{{ url_for('analyze_chatbot_food') }}" style="display: inline;">
+            <button type="submit" class="analysis-btn">
+              🔍 Sohbeti Analiz Et
+            </button>
+          </form>
+        {% else %}
+          <form method="POST" action="{{ url_for('analyze_chatbot') }}" style="display: inline;">
+            <button type="submit" class="analysis-btn">
+              🔍 Sohbeti Analiz Et
+            </button>
+          </form>
+        {% endif %}
+      {% endif %}
+    </div>
+
+  {% endif %}
+</div>
+<script>
+// Timer functionality
+const timerDisplay = document.getElementById('timer');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+
+let timeRemaining = parseInt(timerDisplay.getAttribute('data-time-remaining')) || 180;
+
+function updateTimer() {
+  if (timeRemaining <= 0) {
+    timerDisplay.textContent = '0:00';
+    timerDisplay.style.color = '#e53935';
+    if (chatForm) {
+      chatForm.submit();
+    }
+    return;
+  }
+  
+  const minutes = Math.floor(timeRemaining / 60);
+  const seconds = timeRemaining % 60;
+  timerDisplay.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+  
+  // Change color when time is running low
+  if (timeRemaining <= 30) {
+    timerDisplay.style.color = '#ff9800';
+  } else if (timeRemaining <= 60) {
+    timerDisplay.style.color = '#ffc107';
+  }
+  
+  timeRemaining--;
+}
+
+// Update timer every second
+const timerInterval = setInterval(updateTimer, 1000);
+
+// Enter'a basınca formu submit et
+if (chatInput) {
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && timeRemaining > 0) {
+      e.preventDefault();
+      chatForm.submit();
+    }
+  });
+}
+
+// Auto-scroll to bottom of chat history
+function scrollToBottom() {
+  const chatHistory = document.getElementById('chat-history');
+  if (chatHistory) {
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  }
+}
+
+// Scroll to bottom when page loads
+window.addEventListener('load', scrollToBottom);
+
+// Focus on input when page loads
+if (chatInput) {
+  chatInput.focus();
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block content %}
+<nav class="main-nav">
+    <div class="nav-container">
+        <a href="{{ url_for('index') }}" class="logo">Polytalk</a>
+        <div class="nav-links">
+            <a href="#features">Özellikler</a>
+            <a href="#how-it-works">Nasıl Çalışır</a>
+            <a href="{{ url_for('kullanici.login') }}" class="btn btn-secondary">Giriş Yap</a>
+            <a href="{{ url_for('kullanici.register') }}" class="btn btn-primary">Kayıt Ol</a>
+        </div>
+    </div>
+</nav>
+
+<main class="hero">
+    <div class="hero-content">
+        <h1 class="animate-text">Dil Öğrenmeyi <span class="highlight">Kolaylaştırıyoruz</span></h1>
+        <p class="hero-description">Polytalk ile günlük 5 dakikalık derslerle yeni bir dil öğrenmeye başla. Bilimsel olarak kanıtlanmış yöntemlerle, eğlenceli ve etkili bir şekilde dil öğren.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('kullanici.register') }}" class="btn btn-primary btn-large">
+                <i class="fas fa-rocket"></i>
+                Ücretsiz Başla
+            </a>
+            <a href="#features" class="btn btn-secondary btn-large">
+                <i class="fas fa-info-circle"></i>
+                Daha Fazla Bilgi
+            </a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-number">10K+</span>
+                    <span class="stat-label">Aktif Öğrenci</span>
+                </div>
+            </div>
+            <div class="stat card">
+                <div class="stat-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Dil Seçeneği</span>
+                </div>
+            </div>
+            <div class="stat card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">Başarı Oranı</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Dil Öğrenme">
+        <div class="floating-card word-of-day">
+            <div class="word-of-day-header">
+                <i class="fas fa-leaf"></i>
+                <span>Günün Kelimesi</span>
+            </div>
+            <h4 class="word">{{ günlük_kelime.kelime }}</h4>
+            <p class="meaning">{{ günlük_kelime.anlam }}</p>
+            <div class="example">
+                <i class="fas fa-quote-left"></i>
+                {{ günlük_kelime.örnek }}
+                <i class="fas fa-quote-right"></i>
+            </div>
+            <div class="word-info">
+                <span class="language-badge">
+                    <i class="fas fa-globe"></i>
+                    {{ günlük_kelime.dil }}
+                </span>
+                <span class="date-badge">
+                    <i class="fas fa-calendar"></i>
+                    -
+                </span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<section id="features" class="features">
+    <div class="section-header">
+        <h2>Neden Polytalk?</h2>
+        <p>Dil öğrenmeyi kolaylaştıran modern platform.</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card card">
+            <div class="feature-icon">
+                <i class="fas fa-brain"></i>
+            </div>
+            <h3>Bilimsel Yöntem</h3>
+            <p>Spaced repetition ve aktif öğrenme teknikleriyle kalıcı öğrenme sağlıyoruz.</p>
+            <a href="#" class="btn btn-secondary">
+                Daha Fazla Bilgi <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="feature-card card">
+            <div class="feature-icon">
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <h3>Eğlenceli Dersler</h3>
+            <p>Oyunlaştırılmış derslerle sıkılmadan öğrenin.</p>
+            <a href="#" class="btn btn-secondary">
+                Daha Fazla Bilgi <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="feature-card card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>İlerleme Takibi</h3>
+            <p>Detaylı istatistiklerle gelişiminizi takip edin.</p>
+            <a href="#" class="btn btn-secondary">
+                Daha Fazla Bilgi <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="feature-card card">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>Topluluk Desteği</h3>
+            <p>Diğer öğrencilerle etkileşime geçin ve birlikte öğrenin.</p>
+            <a href="#" class="btn btn-secondary">
+                Daha Fazla Bilgi <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="how-it-works" class="how-it-works">
+    <h2>Nasıl Çalışır?</h2>
+    <div class="steps-container">
+        <div class="step-card card">
+            <div class="step-number">1</div>
+            <div class="step-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h3>Hesap Oluştur</h3>
+            <p>Ücretsiz hesap oluştur ve öğrenme yolculuğuna başla.</p>
+        </div>
+        <div class="step-connector">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="step-card card">
+            <div class="step-number">2</div>
+            <div class="step-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <h3>Dersleri Seç</h3>
+            <p>İstediğin dili ve seviyeyi seç, kişisel planını oluştur.</p>
+        </div>
+        <div class="step-connector">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="step-card card">
+            <div class="step-number">3</div>
+            <div class="step-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3>Öğrenmeye Başla</h3>
+            <p>İnteraktif dersler ve alıştırmalarla pratik yap.</p>
+        </div>
+        <div class="step-connector">
+            <i class="fas fa-arrow-right"></i>
+        </div>
+        <div class="step-card card">
+            <div class="step-number">4</div>
+            <div class="step-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3>Başarıyı Yakala</h3>
+            <p>İlerlemeni takip et ve sertifikalarını kazan.</p>
+        </div>
+    </div>
+</section>
+
+<section id="mini-test" class="mini-test">
+    <div class="section-header">
+        <h2>Mini Test</h2>
+        <p>Dil öğrenme yolculuğunuza başlamadan önce kendinizi test edin!</p>
+    </div>
+    <div class="test-container">
+        <div class="test-progress">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="question-counter">Soru 1/5</div>
+        </div>
+        
+        <div class="test-slider">
+            <div class="test-slide" data-question="1">
+                <h3>"Hello" kelimesinin Türkçe karşılığı nedir?</h3>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q1" value="a"> Merhaba
+                    </label>
+                    <label>
+                        <input type="radio" name="q1" value="b"> Hoşça kal
+                    </label>
+                    <label>
+                        <input type="radio" name="q1" value="c"> Nasılsın
+                    </label>
+                </div>
+            </div>
+
+            <div class="test-slide" data-question="2">
+                <h3>"Good morning" ne anlama gelir?</h3>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q2" value="a"> İyi akşamlar
+                    </label>
+                    <label>
+                        <input type="radio" name="q2" value="b"> Günaydın
+                    </label>
+                    <label>
+                        <input type="radio" name="q2" value="c"> İyi geceler
+                    </label>
+                </div>
+            </div>
+
+            <div class="test-slide" data-question="3">
+                <h3>"Thank you" ifadesinin Türkçe karşılığı nedir?</h3>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q3" value="a"> Lütfen
+                    </label>
+                    <label>
+                        <input type="radio" name="q3" value="b"> Teşekkür ederim
+                    </label>
+                    <label>
+                        <input type="radio" name="q3" value="c"> Rica ederim
+                    </label>
+                </div>
+            </div>
+
+            <div class="test-slide" data-question="4">
+                <h3>"How are you?" sorusunun anlamı nedir?</h3>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q4" value="a"> Adın ne?
+                    </label>
+                    <label>
+                        <input type="radio" name="q4" value="b"> Nasılsın?
+                    </label>
+                    <label>
+                        <input type="radio" name="q4" value="c"> Neredesin?
+                    </label>
+                </div>
+            </div>
+
+            <div class="test-slide" data-question="5">
+                <h3>"Goodbye" kelimesinin Türkçe karşılığı nedir?</h3>
+                <div class="options">
+                    <label>
+                        <input type="radio" name="q5" value="a"> Merhaba
+                    </label>
+                    <label>
+                        <input type="radio" name="q5" value="b"> Hoşça kal
+                    </label>
+                    <label>
+                        <input type="radio" name="q5" value="c"> Günaydın
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-navigation">
+            <button id="prevQuestion" class="btn btn-secondary" disabled>
+                <i class="fas fa-arrow-left"></i> Önceki
+            </button>
+            <button id="nextQuestion" class="btn btn-primary">
+                Sonraki <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        
+        <!-- Test Sonuç Kutusu -->
+        <div id="testResultBox" class="test-result-box" style="display:none;">
+            <div class="result-header">
+                <h2>Test Sonucu</h2>
+                <div class="result-score-text"><span class="score-number">0</span>/5 Doğru</div>
+            </div>
+            <div class="result-answers-list"></div>
+            <a href="{{ url_for('kullanici.register') }}" class="btn btn-primary btn-large result-register-btn">
+                <i class="fas fa-rocket"></i> Daha Fazla Test İçin Kayıt Ol
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Hemen Başlayın</h2>
+        <p>Dil öğrenme yolculuğunuza bugün başlayın ve farkı görün.</p>
+        <a href="{{ url_for('kullanici.register') }}" class="btn btn-primary btn-large">
+            <i class="fas fa-rocket"></i>
+            Ücretsiz Hesap Oluştur
+        </a>
+    </div>
+</section>
+
+<!-- Test Sonuç Modalı -->
+<div id="testResultModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Test Sonucunuz</h2>
+        </div>
+        <div class="modal-body">
+            <div class="result-score">
+                <div class="score-circle">
+                    <span class="score-number">0</span>
+                    <span class="score-percentage">%</span>
+                </div>
+            </div>
+            <div class="result-message"></div>
+            <div class="result-details">
+                <p>Doğru Cevap: <span class="correct-count">0</span>/5</p>
+            </div>
+            
+            <div class="answers-review">
+                <h3>Cevap Anahtarı</h3>
+                <div class="answers-list">
+                    <div class="answer-item">
+                        <div class="question-text">1. "Hello" kelimesinin Türkçe karşılığı nedir?</div>
+                        <div class="answer-details">
+                            <span class="correct-answer">Doğru Cevap: Merhaba</span>
+                            <span class="your-answer">Sizin Cevabınız: <span class="answer-text">-</span></span>
+                        </div>
+                    </div>
+                    <div class="answer-item">
+                        <div class="question-text">2. "Good morning" ne anlama gelir?</div>
+                        <div class="answer-details">
+                            <span class="correct-answer">Doğru Cevap: Günaydın</span>
+                            <span class="your-answer">Sizin Cevabınız: <span class="answer-text">-</span></span>
+                        </div>
+                    </div>
+                    <div class="answer-item">
+                        <div class="question-text">3. "Thank you" ifadesinin Türkçe karşılığı nedir?</div>
+                        <div class="answer-details">
+                            <span class="correct-answer">Doğru Cevap: Teşekkür ederim</span>
+                            <span class="your-answer">Sizin Cevabınız: <span class="answer-text">-</span></span>
+                        </div>
+                    </div>
+                    <div class="answer-item">
+                        <div class="question-text">4. "How are you?" sorusunun anlamı nedir?</div>
+                        <div class="answer-details">
+                            <span class="correct-answer">Doğru Cevap: Nasılsın?</span>
+                            <span class="your-answer">Sizin Cevabınız: <span class="answer-text">-</span></span>
+                        </div>
+                    </div>
+                    <div class="answer-item">
+                        <div class="question-text">5. "Goodbye" kelimesinin Türkçe karşılığı nedir?</div>
+                        <div class="answer-details">
+                            <span class="correct-answer">Doğru Cevap: Hoşça kal</span>
+                            <span class="your-answer">Sizin Cevabınız: <span class="answer-text">-</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="{{ url_for('kullanici.register') }}" class="btn btn-primary btn-large">
+                <i class="fas fa-rocket"></i>
+                Hemen Başla
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

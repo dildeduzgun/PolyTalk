@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-bg">
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <i class="fas fa-user-graduate"></i>
+      </div>
+      <div class="profile-info">
+        <h2>{{ current_user.kullanici_adi or 'Kullanıcı' }}</h2>
+        <div class="profile-handle">@{{ current_user.kullanici_adi or 'kullanici' }}</div>
+        <div class="profile-meta">
+          <span class="profile-date"><i class="fas fa-calendar-alt"></i> Katılım: {{ current_user.olusturulma_tarihi.strftime('%B %Y') if current_user.olusturulma_tarihi else 'Bilinmiyor' }}</span>
+          <span class="profile-flag"><img src="https://flagcdn.com/us.svg" alt="ABD" class="flag-icon"> {{ current_user.hedef_dil|default('Bilinmiyor') }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="stat-box">
+        <i class="fas fa-fire"></i>
+        <div class="stat-label">Günlük Seri</div>
+        <div class="stat-value">{{ user_progress.streak }}</div>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-bolt"></i>
+        <div class="stat-label">Toplam Puan</div>
+        <div class="stat-value">{{ user_progress.toplam_xp }} XP</div>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-trophy"></i>
+        <div class="stat-label">Lig</div>
+        <div class="stat-value">Henüz ligde değil</div>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-medal"></i>
+        <div class="stat-label">İlk 3'te Tamamlama</div>
+        <div class="stat-value">0</div>
+      </div>
+    </div>
+    <div class="achievements-header">
+      <h3>Tüm başarılar</h3>
+      <a href="#" class="show-all" id="toggle-achievements">TÜMÜNÜ GÖSTER</a>
+    </div>
+    <div class="achievements-list achievements-grid" id="achievements-list">
+      <div class="achievement-box bg-red">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-fire"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">İstikrarlı</div>
+          <div class="achievement-desc">3 günlük bir seriye ulaş</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/3</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-green">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-bolt"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Bilge</div>
+          <div class="achievement-desc">100 Puan kazan</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/100</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-yellow">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-scroll"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Bilgin</div>
+          <div class="achievement-desc">Bir kursta 50 yeni kelime öğren</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/50</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-purple">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-trophy"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Şampiyon</div>
+          <div class="achievement-desc">10 ders tamamlayarak Puan Tabloları'nın kilidini aç</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/1</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-green hidden">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-bullseye"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Keskin Nişancı</div>
+          <div class="achievement-desc">1 dersi hiç hata yapmadan tamamlama</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/1</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-pink hidden">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-trophy"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Şampiyon</div>
+          <div class="achievement-desc">Puan tablosunu 1.likte bitir</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/1</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-orange hidden">
+        <div class="achievement-badge">3. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-users"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Dost canlısı</div>
+          <div class="achievement-desc">3 arkadaşını takip et</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/3</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-green hidden">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-calendar-day"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Hafta Sonu Savaşçısı</div>
+          <div class="achievement-desc">Cumartesi ve pazar günü bir ders tamamlama</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/2</div>
+        </div>
+      </div>
+      <div class="achievement-box bg-blue hidden">
+        <div class="achievement-badge">1. Düzey</div>
+        <div class="achievement-icon"><i class="fas fa-image"></i></div>
+        <div class="achievement-info">
+          <div class="achievement-title">Fotojenik</div>
+          <div class="achievement-desc">Profil resmi ekle</div>
+          <div class="achievement-progress-bar"><div class="achievement-progress" style="width: 0%"></div></div>
+          <div class="achievement-progress-text">0/1</div>
+        </div>
+      </div>
+    </div>
+    <!-- Dinamik Rozetler Bölümü -->
+    <div class="achievements-header">
+      <h3>Kazandığın Rozetler</h3>
+    </div>
+    <div class="achievements-list achievements-grid" id="user-rozetler">
+      {% for ach in achievements %}
+        <div class="achievement-box bg-gold">
+          <div class="achievement-badge">Rozet</div>
+          <div class="achievement-icon"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Rozet" style="width:40px;height:40px;"></div>
+          <div class="achievement-info">
+            <div class="achievement-title">{{ ach.description }}</div>
+            <div class="achievement-desc">{{ ach.date_earned.strftime('%d.%m.%Y') }}</div>
+          </div>
+        </div>
+      {% else %}
+        <div>Henüz rozet kazanmadın.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+body, .profile-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  min-height: 100vh;
+}
+.profile-bg {
+  padding: 3rem 0;
+}
+.profile-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #16202a;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: #fff;
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.profile-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #7cff3a;
+  color: #222c3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: 0 2px 8px rgba(124,255,58,0.15);
+}
+.profile-info h2 {
+  margin: 0 0 0.2rem 0;
+  font-size: 2rem;
+  color: #fff;
+}
+.profile-handle {
+  color: #7cff3a;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.profile-meta {
+  display: flex;
+  gap: 1.2rem;
+  font-size: 1rem;
+  color: #b0b8c1;
+  margin-top: 0.2rem;
+}
+.flag-icon {
+  width: 22px;
+  height: 16px;
+  border-radius: 3px;
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+.profile-stats {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+}
+.stat-box {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  text-align: center;
+  flex: 1;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.stat-box i {
+  font-size: 1.5rem;
+  color: #7cff3a;
+  margin-bottom: 0.3rem;
+}
+.stat-label {
+  font-size: 1rem;
+  color: #b0b8c1;
+  margin-bottom: 0.2rem;
+}
+.stat-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+}
+.achievements-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+.achievements-header h3 {
+  color: #7cff3a;
+  font-size: 1.3rem;
+  margin: 0;
+}
+.show-all {
+  color: #7cff3a;
+  font-size: 1rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.achievements-list {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+}
+.achievement-box {
+  display: flex;
+  align-items: center;
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  position: relative;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+.achievement-badge {
+  position: absolute;
+  left: -1.2rem;
+  top: -1.2rem;
+  background: #fff;
+  color: #222c3a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.2rem 0.7rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  z-index: 2;
+}
+.bg-red { background: #ff4d4f !important; }
+.bg-green { background: #4caf50 !important; }
+.bg-yellow { background: #ffd600 !important; }
+.bg-purple { background: #b388ff !important; }
+.bg-pink { background: #ff80ab !important; }
+.bg-orange { background: #ffb300 !important; }
+.bg-blue { background: #40c4ff !important; }
+.bg-gold { background: #ffd700 !important; }
+.achievement-icon {
+  font-size: 1.6rem;
+  color: #7cff3a;
+  margin-right: 1rem;
+  min-width: 2rem;
+  text-align: center;
+}
+.achievement-info {
+  flex: 1;
+}
+.achievement-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+.achievement-desc {
+  font-size: 0.9rem;
+  color: #b0b8c1;
+  margin-bottom: 0.3rem;
+}
+.achievement-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #263043;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.2rem;
+}
+.achievement-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #7cff3a 60%, #28a745 100%);
+  border-radius: 6px;
+  transition: width 0.4s;
+}
+.achievement-progress-text {
+  font-size: 0.85rem;
+  color: #b0b8c1;
+  margin-top: 0.1rem;
+}
+.hidden { display: none !important; }
+
+
+</style>
+<script>
+document.getElementById('toggle-achievements').onclick = function(e) {
+  e.preventDefault();
+  const boxes = document.querySelectorAll('.achievement-box');
+  const hidden = document.querySelectorAll('.achievement-box.hidden');
+  const btn = document.getElementById('toggle-achievements');
+  if (btn.textContent.includes('TÜMÜNÜ GÖSTER')) {
+    boxes.forEach(box => box.classList.remove('hidden'));
+    btn.textContent = 'DAHA AZ GÖSTER';
+  } else {
+    boxes.forEach((box, i) => { box.classList.toggle('hidden', i > 3); });
+    btn.textContent = 'TÜMÜNÜ GÖSTER';
+  }
+};
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.achievement-box').forEach((box, i) => {
+    if (i > 3) box.classList.add('hidden');
+  });
+});
+</script>
+{% endblock %} 

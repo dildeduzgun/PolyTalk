@@ -1,0 +1,953 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="test-page-container">
+    <!-- Test Header -->
+    <div class="test-header">
+        <div class="test-header-content">
+            <div class="test-title-section">
+                <h1 class="test-title">
+                    {% if food_mode %}
+                        🍽️ Yemek Testi
+                    {% else %}
+                        👋 Selamlaşma Testi
+                    {% endif %}
+                </h1>
+                <p class="test-subtitle">
+                    {% if food_mode %}
+                        Yemek kültürü ve mutfak terimlerini öğrenin
+                    {% else %}
+                        Günlük konuşmalarda kullanılan selamlaşma ifadelerini test edin
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="test-progress-section">
+                <div class="progress-circle">
+                    <svg class="progress-ring" width="80" height="80">
+                        <circle class="progress-ring-circle-bg" cx="40" cy="40" r="32" stroke-width="4"/>
+                        <circle class="progress-ring-circle" cx="40" cy="40" r="32" stroke-width="4"/>
+                    </svg>
+                    <div class="progress-text">
+                        <span id="greet-current" class="current-question">1</span>
+                        <span class="total-questions">/10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Content -->
+    <div class="test-content">
+        <div class="question-container">
+            <div class="question-card">
+                <div class="question-header">
+                    <div class="question-number">
+                        <span class="number-badge">Soru</span>
+                        <span class="number-value" id="question-number">1</span>
+                    </div>
+                    <div class="question-xp">
+                        <div class="xp-circle">
+                            <i class="fas fa-star"></i>
+                            <span id="current-xp">0</span>
+                        </div>
+                    </div>
+                    <div class="question-timer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timer">00:30</span>
+                    </div>
+                </div>
+                
+                <div class="question-body">
+                    <h2 id="greet-question" class="question-text"></h2>
+                    <div id="greet-choices" class="choices-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Section -->
+        <div id="greet-feedback" class="feedback-container"></div>
+        
+
+    </div>
+
+
+
+    <!-- Hidden Form -->
+    <form id="greet-form" method="POST" style="display: none;">
+        <input type="hidden" id="greet-final-score" name="skor" value="0">
+    </form>
+
+    <!-- Confetti Container -->
+    <div id="greet-confetti" class="confetti-container"></div>
+</div>
+
+<script>
+const rawQuestions = {{ sorular|tojson }};
+const greetQuestions = rawQuestions.map(q => {
+    const choices = [...q.secenekler];
+    for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [choices[i], choices[j]] = [choices[j], choices[i]];
+    }
+    
+    return {
+        text: q.tr,
+        choices: choices.map(label => ({ label, is_correct: label === q.dogru }))
+    };
+});
+
+let greetCurrent = 0;
+let greetScore = 0;
+let timerInterval;
+let timeLeft = 30;
+
+function startTimer() {
+    timeLeft = 30;
+    updateTimerDisplay();
+    
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            autoSubmit();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById('timer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    
+    // Timer warning colors
+    const timerElement = document.getElementById('timer');
+    if (timeLeft <= 10) {
+        timerElement.style.color = '#ff4757';
+        timerElement.style.animation = 'pulse 1s infinite';
+    } else if (timeLeft <= 20) {
+        timerElement.style.color = '#ffa502';
+    }
+}
+
+function autoSubmit() {
+    const choices = document.querySelectorAll('.choice-option');
+    if (choices.length > 0) {
+        // Auto-select first choice if none selected
+        const firstChoice = choices[0];
+        const isCorrect = firstChoice.dataset.correct === 'true';
+        selectGreetChoice(firstChoice, isCorrect);
+    }
+}
+
+function renderGreetQuestion() {
+    const q = greetQuestions[greetCurrent];
+    document.getElementById('greet-question').textContent = q.text;
+    document.getElementById('question-number').textContent = greetCurrent + 1;
+    document.getElementById('greet-current').textContent = greetCurrent + 1;
+    
+    const choicesDiv = document.getElementById('greet-choices');
+    choicesDiv.innerHTML = '';
+    
+    // Update progress circle
+    updateProgressCircle();
+    
+    // Shuffle choices
+    const shuffledChoices = [...q.choices];
+    for (let i = shuffledChoices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledChoices[i], shuffledChoices[j]] = [shuffledChoices[j], shuffledChoices[i]];
+    }
+    
+    shuffledChoices.forEach((c, i) => {
+        const choiceDiv = document.createElement('div');
+        choiceDiv.className = 'choice-option';
+        choiceDiv.dataset.correct = c.is_correct;
+        choiceDiv.innerHTML = `
+            <div class="choice-content">
+                <div class="choice-letter">${String.fromCharCode(65 + i)}</div>
+                <div class="choice-text">${c.label}</div>
+            </div>
+            <div class="choice-icon">
+                <i class="fas fa-check"></i>
+            </div>
+        `;
+        choiceDiv.onclick = function() { 
+            selectGreetChoice(choiceDiv, c.is_correct); 
+        };
+        choicesDiv.appendChild(choiceDiv);
+    });
+    
+    // Clear feedback
+    document.getElementById('greet-feedback').innerHTML = '';
+    
+    // Start timer
+    startTimer();
+}
+
+function updateProgressCircle() {
+    const progress = (greetCurrent / greetQuestions.length) * 100;
+    const circle = document.querySelector('.progress-ring-circle');
+    const radius = circle.r.baseVal.value;
+    const circumference = radius * 2 * Math.PI;
+    
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = circumference - (progress / 100) * circumference;
+}
+
+function selectGreetChoice(el, isCorrect) {
+    // Stop timer
+    clearInterval(timerInterval);
+    
+    // Disable all choices
+    document.querySelectorAll('.choice-option').forEach(c => {
+        c.style.pointerEvents = 'none';
+        c.classList.remove('selected');
+    });
+    
+    // Select clicked choice
+    el.classList.add('selected');
+    
+    if (isCorrect) {
+        greetScore += 10;
+        el.classList.add('correct');
+        showFeedback('Doğru! 🎉', 'success');
+        playSound('success');
+    } else {
+        el.classList.add('incorrect');
+        showFeedback('Yanlış! 😔', 'error');
+        playSound('error');
+        
+        // Show correct answer
+        document.querySelectorAll('.choice-option').forEach(c => {
+            if (c.dataset.correct === 'true') {
+                c.classList.add('correct-answer');
+            }
+        });
+    }
+    
+    // Auto go to next question after 2 seconds
+    setTimeout(() => {
+        goToNextQuestion();
+    }, 2000);
+    
+    animateXPBar();
+}
+
+function showFeedback(message, type) {
+    const feedbackDiv = document.getElementById('greet-feedback');
+    feedbackDiv.innerHTML = `
+        <div class="feedback-message ${type}">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    feedbackDiv.style.display = 'block';
+}
+
+function playSound(type) {
+    const audio = new Audio(`/static/sounds/${type}.mp3`);
+    audio.volume = 0.3;
+    audio.play().catch(e => console.log('Audio play failed:', e));
+}
+
+function goToNextQuestion() {
+    greetCurrent++;
+    if (greetCurrent < greetQuestions.length) {
+        renderGreetQuestion();
+    } else {
+        if (greetScore >= 50) {
+            showConfetti();
+            setTimeout(() => {
+                document.getElementById('greet-final-score').value = greetScore;
+                document.getElementById('greet-form').submit();
+            }, 3000);
+        } else {
+            showFeedback('Test tamamlandı! Daha fazla pratik yapmanız gerekiyor.', 'info');
+            setTimeout(() => {
+                document.getElementById('greet-final-score').value = greetScore;
+                document.getElementById('greet-form').submit();
+            }, 2000);
+        }
+    }
+}
+
+function animateXPBar() {
+    const xp = Math.min(greetScore, 100);
+    document.getElementById('current-xp').textContent = xp;
+    
+    // XP circle animasyonu
+    const xpCircle = document.querySelector('.xp-circle');
+    if (xpCircle) {
+        xpCircle.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            xpCircle.style.transform = 'scale(1)';
+        }, 200);
+    }
+}
+
+function showConfetti() {
+    const confetti = document.getElementById('greet-confetti');
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'];
+    
+    for (let i = 0; i < 100; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.appendChild(particle);
+    }
+    
+    setTimeout(() => { 
+        confetti.innerHTML = ''; 
+    }, 5000);
+}
+
+// Initialize
+renderGreetQuestion();
+animateXPBar();
+</script>
+
+<style>
+.test-page-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 2rem 1rem;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.test-page-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0, 255, 0, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 255, 0, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 60% 60%, rgba(0, 255, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 10% 50%, rgba(0, 255, 0, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+    animation: backgroundFloat 20s ease-in-out infinite;
+}
+
+.test-page-container > * {
+    position: relative;
+    z-index: 2;
+}
+
+.test-header {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(0, 255, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(0, 255, 0, 0.1);
+    border: 1px solid #2d3748;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.test-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+    animation: shimmer 3s infinite;
+}
+
+.test-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.05) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(0, 255, 0, 0.03) 50%, transparent 70%);
+    pointer-events: none;
+    animation: subtleGlow 6s ease-in-out infinite alternate;
+}
+
+.test-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.test-title-section {
+    flex: 1;
+}
+
+.test-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #00ff00;
+    margin: 0 0 0.5rem 0;
+}
+
+.test-subtitle {
+    font-size: 1.1rem;
+    color: #cccccc;
+    margin: 0;
+    font-weight: 500;
+}
+
+.test-progress-section {
+    display: flex;
+    align-items: center;
+}
+
+.progress-circle {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.progress-ring {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-circle-bg {
+    fill: none;
+    stroke: #e2e8f0;
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: #58cc02;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-weight: 700;
+}
+
+.current-question {
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+.total-questions {
+    font-size: 0.9rem;
+    color: #a0aec0;
+}
+
+.test-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.question-container {
+    margin-bottom: 2rem;
+}
+
+.question-card {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(0, 255, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 30px rgba(0, 255, 0, 0.08);
+    border: 1px solid #2d3748;
+    animation: slideInUp 0.5s ease;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.question-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.08) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(0, 255, 0, 0.05) 50%, transparent 70%);
+    pointer-events: none;
+    animation: glow 4s ease-in-out infinite alternate;
+}
+
+.question-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+    animation: rotate 10s linear infinite;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f7fafc;
+}
+
+.question-number {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.number-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.number-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #2d3748;
+}
+
+.question-xp {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.xp-circle {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #1a1a2e;
+    padding: 0.5rem 0.8rem;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    animation: xpPulse 2s ease-in-out infinite;
+}
+
+.xp-circle i {
+    color: #ff6b35;
+    font-size: 0.9rem;
+}
+
+@keyframes xpPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.question-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f7fafc;
+    padding: 0.5rem 1rem;
+    border-radius: 15px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.question-timer i {
+    color: #667eea;
+}
+
+.question-body {
+    text-align: center;
+}
+
+.question-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2rem;
+    line-height: 1.4;
+}
+
+.choices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.choice-option {
+    background: linear-gradient(135deg, #1e293b 0%, #1f2937 100%);
+    border: 2px solid #334155;
+    border-radius: 15px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(0, 255, 0, 0.05);
+    transform-style: preserve-3d;
+}
+
+.choice-option::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(45deg, transparent, rgba(0, 255, 0, 0.08), transparent),
+        linear-gradient(-45deg, transparent, rgba(0, 255, 0, 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.choice-option:hover::before {
+    opacity: 1;
+}
+
+.choice-option::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(0, 255, 0, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.choice-option:hover::after {
+    opacity: 1;
+}
+
+.choice-option:hover {
+    border-color: #00ff00;
+    transform: translateY(-5px) scale(1.03) rotateX(5deg);
+    box-shadow: 
+        0 20px 40px rgba(0, 255, 0, 0.3),
+        0 0 0 2px rgba(0, 255, 0, 0.3),
+        0 0 30px rgba(0, 255, 0, 0.2);
+}
+
+.choice-option.selected {
+    border-color: #00ff00;
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    color: #000000;
+    transform: scale(1.08) rotateX(10deg);
+    box-shadow: 
+        0 25px 50px rgba(0, 255, 0, 0.5),
+        0 0 0 3px rgba(0, 255, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 40px rgba(0, 255, 0, 0.3);
+    animation: selectedPulse 0.6s ease;
+}
+
+.choice-option.correct {
+    border-color: #48bb78;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    animation: correctPulse 0.6s ease;
+}
+
+.choice-option.incorrect {
+    border-color: #f56565;
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    color: white;
+    animation: incorrectShake 0.6s ease;
+}
+
+.choice-option.correct-answer {
+    border-color: #48bb78;
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    animation: correctPulse 0.6s ease;
+}
+
+.choice-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.choice-letter {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.3));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #00ff00;
+    font-size: 1.1rem;
+    box-shadow: 
+        0 2px 8px rgba(0, 255, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.choice-letter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.choice-option:hover .choice-letter::before {
+    opacity: 1;
+}
+
+.choice-option.selected .choice-letter,
+.choice-option.correct .choice-letter,
+.choice-option.correct-answer .choice-letter {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.choice-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+    color: #ffffff;
+}
+
+.choice-icon {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.choice-option.selected .choice-icon,
+.choice-option.correct .choice-icon,
+.choice-option.correct-answer .choice-icon {
+    opacity: 1;
+}
+
+.feedback-container {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.feedback-message {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    animation: slideInDown 0.5s ease;
+}
+
+.feedback-message.success {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+}
+
+.feedback-message.error {
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    color: white;
+}
+
+.feedback-message.info {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+}
+
+.action-buttons {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+
+
+
+
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.confetti-particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: confettiFall linear forwards;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes incorrectShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes xpGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(246, 173, 85, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(246, 173, 85, 0.8); }
+}
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes glow {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+@keyframes selectedPulse {
+    0% { transform: scale(1.08) rotateX(10deg); }
+    50% { transform: scale(1.12) rotateX(15deg); }
+    100% { transform: scale(1.08) rotateX(10deg); }
+}
+
+@keyframes backgroundFloat {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-10px) rotate(1deg); }
+    50% { transform: translateY(-5px) rotate(-1deg); }
+    75% { transform: translateY(-15px) rotate(0.5deg); }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes subtleGlow {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+@media (max-width: 768px) {
+    .test-header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .test-title {
+        font-size: 2rem;
+    }
+    
+    .question-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .choices-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .question-text {
+        font-size: 1.5rem;
+    }
+    
+    .choice-option {
+        padding: 1rem;
+    }
+    
+    .choice-content {
+        gap: 0.5rem;
+    }
+    
+    .choice-letter {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %} 

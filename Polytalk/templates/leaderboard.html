@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="leaderboard-bg">
+  <div class="leaderboard-container">
+    <h2>Puan Tablosu</h2>
+    <div class="leaderboard-list">
+      {% for kullanici in kullanicilar %}
+      <div class="leaderboard-row {% if loop.index == 1 %}first{% elif loop.index == 2 %}second{% elif loop.index == 3 %}third{% endif %}">
+        <div class="leaderboard-rank">
+          {% if loop.index == 1 %}<i class="fas fa-crown gold"></i>{% elif loop.index == 2 %}<i class="fas fa-crown silver"></i>{% elif loop.index == 3 %}<i class="fas fa-crown bronze"></i>{% else %}{{ loop.index }}{% endif %}
+        </div>
+        <div class="leaderboard-username">{{ kullanici.kullanici_adi }}</div>
+        <div class="leaderboard-score">{{ kullanici.toplam_xp }} XP</div>
+      </div>
+      {% endfor %}
+      {% if current_user_row %}
+      <div class="leaderboard-row" style="background:#263043; border:2px solid #7cff3a;">
+        <div class="leaderboard-rank">{{ current_user_row.rank }}</div>
+        <div class="leaderboard-username">{{ current_user_row.kullanici_adi }} <span style="color:#7cff3a;">(Sen)</span></div>
+        <div class="leaderboard-score">{{ current_user_row.toplam_xp }} XP</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+body, .leaderboard-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  min-height: 100vh;
+}
+.leaderboard-bg {
+  padding: 3rem 0;
+}
+.leaderboard-container {
+  max-width: 500px;
+  margin: 0 auto;
+  background: #16202a;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: #fff;
+}
+.leaderboard-container h2 {
+  text-align: center;
+  color: #7cff3a;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: transform 0.15s;
+  position: relative;
+}
+.leaderboard-row:hover {
+  transform: scale(1.03);
+  background: #263043;
+}
+.leaderboard-rank {
+  width: 40px;
+  text-align: center;
+  font-size: 1.5rem;
+  margin-right: 1.2rem;
+}
+.leaderboard-username {
+  flex: 1;
+  color: #fff;
+}
+.leaderboard-score {
+  color: #7cff3a;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.gold { color: #ffd700; text-shadow: 0 2px 8px #ffd70044; }
+.silver { color: #b0b8c1; text-shadow: 0 2px 8px #b0b8c144; }
+.bronze { color: #ff9800; text-shadow: 0 2px 8px #ff980044; }
+.first { background: #263043; }
+.second { background: #222c3a; }
+.third { background: #222c3a; }
+</style>
+{% endblock %} 

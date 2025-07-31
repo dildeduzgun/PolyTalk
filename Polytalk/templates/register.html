@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <div class="auth-header">
+            <h2>Kayıt Ol</h2>
+            <p>Yeni bir hesap oluşturun ve öğrenmeye başlayın</p>
+        </div>
+        <form method="POST" action="{{ url_for('kullanici.register') }}" class="auth-form">
+            <div class="form-group">
+                <label for="kullanici_adi">Kullanıcı Adı</label>
+                <input type="text" id="kullanici_adi" name="kullanici_adi" placeholder="Kullanıcı Adı" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-posta Adresi</label>
+                <input type="email" id="email" name="email" placeholder="E-posta Adresi" required>
+            </div>
+            <div class="form-group">
+                <label for="sifre">Şifre</label>
+                <input type="password" id="sifre" name="sifre" placeholder="Şifre" required>
+            </div>
+            <button type="submit" class="form-submit">
+                <i class="fas fa-user-plus"></i>
+                Kayıt Ol
+            </button>
+        </form>
+        <div class="form-footer">
+            <p>Zaten hesabınız var mı? <a href="{{ url_for('kullanici.login') }}">Giriş Yap</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

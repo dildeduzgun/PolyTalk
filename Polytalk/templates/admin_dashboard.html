@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="yonetici-paneli">
+    <div class="panel-baslik">
+        <h1>Yönetici Paneli</h1>
+        <a href="{{ url_for('kullanici.logout') }}" class="cikis-butonu">Çıkış Yap</a>
+    </div>
+
+    <div class="istatistikler">
+        <div class="istatistik-kutu">
+            <h3>Toplam Kullanıcı</h3>
+            <p>{{ kullanicilar|length }}</p>
+        </div>
+        <div class="istatistik-kutu">
+            <h3>Aktif Kullanıcılar</h3>
+            <p>{{ kullanicilar|selectattr('son_giris', 'defined')|list|length }}</p>
+        </div>
+    </div>
+
+    <div class="kullanici-islemleri">
+        <button class="yeni-kullanici-btn" onclick="yeniKullaniciFormunuGoster()">Yeni Kullanıcı Ekle</button>
+        
+        <div id="yeniKullaniciForm" class="yeni-kullanici-form" style="display: none;">
+            <h3>Yeni Kullanıcı Ekle</h3>
+            <form action="{{ url_for('admin_add_user') }}" method="POST">
+                <div class="form-grup">
+                    <label for="kullanici_adi">Kullanıcı Adı:</label>
+                    <input type="text" id="kullanici_adi" name="kullanici_adi" required>
+                </div>
+                <div class="form-grup">
+                    <label for="email">E-posta:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-grup">
+                    <label for="sifre">Şifre:</label>
+                    <input type="password" id="sifre" name="sifre" required>
+                </div>
+                <div class="form-grup">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="is_admin" value="1">
+                        <span>Yönetici Yetkisi</span>
+                    </label>
+                </div>
+                <div class="form-butonlar">
+                    <button type="submit" class="kaydet-btn">Kaydet</button>
+                    <button type="button" class="iptal-btn" onclick="yeniKullaniciFormunuGizle()">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="kullanici-tablosu">
+        <h2>Kullanıcı Listesi</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>E-posta</th>
+                    <th>Puan</th>
+                    <th>Seviye</th>
+                    <th>Seri</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>Son Giriş</th>
+                    <th>Yetki</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for kullanici in kullanicilar %}
+                <tr class="{% if kullanici.is_admin %}admin-row{% elif kullanici.is_moderator %}moderator-row{% endif %}">
+                    <td>{{ kullanici.id }}</td>
+                    <td>{{ kullanici.kullanici_adi }}</td>
+                    <td>{{ kullanici.email }}</td>
+                    <td>{{ kullanici.toplam_xp }}</td>
+                    <td>{{ kullanici.seviye }}</td>
+                    <td>{{ kullanici.streak }}</td>
+                    <td>{{ kullanici.olusturulma_tarihi.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td>{{ kullanici.son_giris }}</td>
+                    <td>
+                        <form action="{{ url_for('admin_change_role') }}" method="POST" class="yetki-form">
+                            <input type="hidden" name="kullanici_id" value="{{ kullanici.id }}">
+                            <select name="role" class="role-select" onchange="this.form.submit()">
+                                <option value="user" {% if not kullanici.is_admin and not kullanici.is_moderator %}selected{% endif %}>Kullanıcı</option>
+                                <option value="moderator" {% if kullanici.is_moderator %}selected{% endif %}>Moderatör</option>
+                                <option value="admin" {% if kullanici.is_admin %}selected{% endif %}>Yönetici</option>
+                            </select>
+                        </form>
+                    </td>
+                    <td>
+                        {% if not kullanici.is_admin %}
+                        <button class="sil-btn" onclick="kullaniciSil({{ kullanici.id }})">Sil</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+.yonetici-paneli {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.panel-baslik {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.panel-baslik h1 {
+    color: #fff;
+    font-size: 2rem;
+}
+
+.cikis-butonu {
+    padding: 0.5rem 1rem;
+    background: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.cikis-butonu:hover {
+    background: #ff3333;
+    transform: translateY(-1px);
+}
+
+.istatistikler {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.istatistik-kutu {
+    background: #1e293b;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.istatistik-kutu h3 {
+    color: #7cff3a;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.istatistik-kutu p {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.kullanici-islemleri {
+    margin-bottom: 2rem;
+}
+
+.yeni-kullanici-btn {
+    padding: 0.8rem 1.5rem;
+    background: #7cff3a;
+    color: #0f172a;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.yeni-kullanici-btn:hover {
+    background: #6ae02a;
+    transform: translateY(-1px);
+}
+
+.yeni-kullanici-form {
+    background: #1e293b;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.yeni-kullanici-form h3 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.form-grup {
+    margin-bottom: 1rem;
+}
+
+.form-grup label {
+    display: block;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.form-grup input[type="text"],
+.form-grup input[type="email"],
+.form-grup input[type="password"] {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #263043;
+    border-radius: 6px;
+    background: #16202a;
+    color: #fff;
+}
+
+.form-butonlar {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.kaydet-btn, .iptal-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.kaydet-btn {
+    background: #7cff3a;
+    color: #0f172a;
+}
+
+.iptal-btn {
+    background: #ff4d4d;
+    color: #fff;
+}
+
+.kullanici-tablosu {
+    background: #1e293b;
+    padding: 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.kullanici-tablosu h2 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #263043;
+}
+
+th {
+    background: #16202a;
+    font-weight: 600;
+}
+
+tr:hover {
+    background: #16202a;
+}
+
+.yetki-form {
+    margin: 0;
+}
+
+.role-select {
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #263043;
+    background: #16202a;
+    color: #7cff3a;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: border 0.2s;
+}
+
+.role-select:focus {
+    outline: none;
+    border-color: #7cff3a;
+}
+
+.sil-btn {
+    padding: 0.5rem 1rem;
+    background: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.sil-btn:hover {
+    background: #ff3333;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.checkbox-label span {
+    color: #fff;
+}
+
+.admin-row {
+    background: rgba(124, 255, 58, 0.1);
+}
+
+.admin-row:hover {
+    background: rgba(124, 255, 58, 0.2);
+}
+
+.moderator-row {
+    background: rgba(58, 183, 255, 0.10);
+}
+
+.moderator-row:hover {
+    background: rgba(58, 183, 255, 0.18);
+}
+</style>
+
+<script>
+function yeniKullaniciFormunuGoster() {
+    document.getElementById('yeniKullaniciForm').style.display = 'block';
+}
+
+function yeniKullaniciFormunuGizle() {
+    document.getElementById('yeniKullaniciForm').style.display = 'none';
+}
+
+function kullaniciSil(kullaniciId) {
+    if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+        fetch('/admin/users/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ kullanici_id: kullaniciId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Kullanıcı silinirken bir hata oluştu!');
+            }
+        });
+    }
+}
+</script>
+{% endblock %} 

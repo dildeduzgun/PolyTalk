@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="tasks-bg">
+  <div class="tasks-container">
+    <div class="welcome-box">
+      <div class="welcome-text">
+        <h2>Hoş geldin!</h2>
+        <p>Ödülleri kazanmak için görevleri tamamla!<br>Görevler her gün yenilenir.</p>
+      </div>
+      <div class="welcome-img" style="font-size: 3.5rem; margin-left: 1.5rem;">🦉</div>
+      <div class="welcome-timer">
+        <i class="fas fa-clock"></i> <span>5 SAAT</span>
+      </div>
+    </div>
+    <h3 class="tasks-title">Günlük Görevler</h3>
+    <div class="tasks-list">
+      {% for task in tasks %}
+        <div class="task-card {% if task.is_completed %}completed{% endif %}">
+          <div class="task-icon">
+            {% if 'xp' in task.task_type %}⚡{% elif 'lesson' in task.task_type %}📘{% elif 'word' in task.task_type %}📝{% elif 'streak' in task.task_type %}🔥{% else %}🎯{% endif %}
+          </div>
+          <div class="task-info">
+            <div class="task-title">{{ task.title }}</div>
+            <div class="task-progress-bar">
+              <div class="task-progress" style="width: {{ (task.xp_reward / task.target) * 100 if task.target else 0 }}%"></div>
+            </div>
+            <div class="task-progress-text">{{ 0 }}/{{ task.target }}</div>
+          </div>
+          <div class="task-reward" title="Ödül">
+            🎁
+          </div>
+        </div>
+      {% else %}
+        <div class="task-card locked">
+          <div class="task-icon"><i class="fas fa-lock"></i></div>
+          <div class="task-info">
+            <div class="task-title">Yakında yeni görevlerin kilidi açılacak</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+body, .tasks-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  min-height: 100vh;
+}
+.tasks-bg {
+  padding: 3rem 0;
+}
+.tasks-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #16202a;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+  color: #fff;
+}
+.welcome-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #a78bfa;
+  border-radius: 18px;
+  padding: 1.5rem 2rem 1.5rem 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+.welcome-text h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.welcome-text p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+.welcome-img {
+  margin-left: 1.5rem;
+}
+.welcome-timer {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.2rem;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.tasks-title {
+  font-size: 1.3rem;
+  margin-bottom: 1.2rem;
+  color: #fff;
+}
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.task-card {
+  display: flex;
+  align-items: center;
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 1.1rem 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  font-size: 1.1rem;
+  font-weight: 600;
+  position: relative;
+  transition: transform 0.15s, background 0.15s;
+}
+.task-card.completed {
+  background: #7cff3a33;
+  color: #7cff3a;
+}
+.task-card.locked {
+  background: #222c3a;
+  color: #888;
+}
+.task-icon {
+  font-size: 2rem;
+  margin-right: 1.2rem;
+  color: #ffe066;
+}
+.task-card.completed .task-icon {
+  color: #7cff3a;
+}
+.task-card.locked .task-icon {
+  color: #888;
+}
+.task-info {
+  flex: 1;
+}
+.task-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.task-progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #263043;
+  border-radius: 5px;
+  margin-bottom: 0.2rem;
+  overflow: hidden;
+}
+.task-progress {
+  height: 100%;
+  background: #7cff3a;
+  border-radius: 5px;
+  transition: width 0.3s;
+}
+.task-progress-text {
+  font-size: 0.95rem;
+  color: #b0b8c1;
+}
+.task-reward {
+  margin-left: 1.2rem;
+  font-size: 1.5rem;
+  color: #fbbf24;
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="cards-bg">
+  <div class="cards-container">
+    <div class="cards-header">
+      <span class="cards-header-icon">🃏</span>
+      <h2>Kartlarım</h2>
+    </div>
+    <form method="POST" action="{{ url_for('kullanici.add_card') }}" class="card-form" onsubmit="return validateForm()">
+      <div class="form-row">
+        <input type="text" name="kelime" placeholder="Kelime" required>
+        <input type="text" name="anlam" placeholder="Anlamı" required>
+        <input type="text" name="örnek" placeholder="Örnek cümle (isteğe bağlı)">
+        <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Ekle</button>
+      </div>
+    </form>
+    <div class="export-btns">
+      <a href="{{ url_for('kullanici.download_cards_pdf') }}" class="btn btn-secondary"><i class="fas fa-file-pdf"></i> PDF</a>
+      <a href="{{ url_for('kullanici.download_cards_csv') }}" class="btn btn-secondary"><i class="fas fa-file-csv"></i> CSV</a>
+    </div>
+    <div class="cards-list">
+      {% if kartlar %}
+        {% for kart in kartlar %}
+        <div class="card-item">
+          <div class="card-item-main">
+            <div class="card-word">{{ kart.kelime }}</div>
+            <div class="card-meaning">{{ kart.anlam }}</div>
+            {% if kart.örnek %}<div class="card-example"><span class="bubble">{{ kart.örnek }}</span></div>{% endif %}
+          </div>
+          <div class="card-item-meta">
+            <span class="card-date"><i class="fas fa-calendar-alt"></i> {{ kart.created_at.strftime('%d.%m.%Y') }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-cards">Henüz kart eklemediniz.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+function validateForm() {
+    const kelime = document.querySelector('input[name="kelime"]').value;
+    const anlam = document.querySelector('input[name="anlam"]').value;
+    console.log('Form gönderiliyor:', { kelime, anlam });
+    return true;
+}
+</script>
+<style>
+.cards-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; padding: 3rem 0 5rem 0; }
+.cards-container { max-width: 600px; margin: 0 auto; background: #16202a; border-radius: 24px; box-shadow: 0 2px 16px rgba(0,0,0,0.10); padding: 2.5rem 2rem 2rem 2rem; color: #fff; }
+.cards-header { display: flex; align-items: center; justify-content: center; gap: 0.7rem; margin-bottom: 2rem; }
+.cards-header-icon { font-size: 2.2rem; }
+.cards-container h2 { color: #7cff3a; text-align: center; margin: 0; font-size: 2rem; }
+.card-form { margin-bottom: 1.5rem; background: #1e293b; border-radius: 14px; padding: 1.2rem 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+.form-row input { flex: 1; padding: 0.7rem 1rem; border-radius: 8px; border: none; font-size: 1rem; background: #263043; color: #fff; }
+.form-row button { padding: 0.7rem 1.5rem; border-radius: 8px; border: none; background: #7cff3a; color: #222c3a; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.form-row button:hover { background: #5be020; }
+.export-btns { display: flex; gap: 1rem; justify-content: flex-end; margin-bottom: 1.2rem; }
+.export-btns a { display: flex; align-items: center; gap: 0.4rem; font-size: 1rem; font-weight: 600; }
+.cards-list { display: flex; flex-direction: column; gap: 1.1rem; }
+.card-item { background: #16202a; border-radius: 16px; padding: 1.2rem 1.2rem 1.2rem 1.4rem; box-shadow: 0 4px 16px rgba(124,255,58,0.07); font-size: 1.1rem; font-weight: 600; position: relative; color: #fff; display: flex; justify-content: space-between; align-items: flex-start; transition: transform 0.15s, box-shadow 0.15s; }
+.card-item:hover { transform: scale(1.025); box-shadow: 0 8px 32px rgba(124,255,58,0.13); }
+.card-item-main { flex: 1; }
+.card-word { font-size: 1.25rem; font-weight: 700; color: #7cff3a; }
+.card-meaning { margin-top: 0.2rem; color: #b0b8c1; }
+.card-example { margin-top: 0.4rem; }
+.bubble { display: inline-block; background: #ffe066; color: #222c3a; border-radius: 16px; padding: 0.3rem 0.9rem; font-size: 1rem; font-style: italic; box-shadow: 0 2px 8px #ffe06633; }
+.card-item-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; min-width: 90px; }
+.card-date { font-size: 0.98rem; color: #b0b8c1; }
+.no-cards { text-align: center; color: #b0b8c1; margin-top: 2rem; }
+@media (max-width: 700px) { .cards-container { padding: 1.2rem 0.5rem; } .form-row { flex-direction: column; gap: 0.7rem; } }
+</style>
+{% endblock %} 

@@ -95,7 +95,7 @@
 - Gamification sistemi (XP, Seviye, Streak)
 - Veri görselleştirme grafikleri
 
----
+
 
 ### ⚙️ **Dilde Gül Düzgün** - Yazılım Mimarı ve Altyapı Geliştirici
 > *"Sürdürülebilir kod mimarisi ve yüksek performans, projenin geleceğini inşa eder."*
@@ -113,7 +113,6 @@
 - **Gelişmiş API Katmanı**: Frontend ve AI servisleri arasında yüksek hızlı veri transferi sağlayan optimize edilmiş uç noktalar
 
 
----
 
 ## 🚀 Özellikler
 
@@ -535,6 +534,7 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için [LICENSE](
 [![GitHub issues](https://img.shields.io/github/issues/polytalk-team/polytalk)](https://github.com/polytalk-team/polytalk/issues)
 
 </div> 
+
 
 
 

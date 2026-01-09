@@ -97,6 +97,21 @@
 
 ---
 
+### ⚙️ **Dilde Gül Düzgün** - Yazılım Mimarı ve Altyapı Geliştirici
+> *"Sürdürülebilir kod mimarisi ve yüksek performans, projenin geleceğini inşa eder."*
+
+**🛠️ Sorumluluklar:**
+- ✅ Proje mimarisinin modüler yapıya dönüştürülmesi ve kod refaktörizasyonu
+- ✅ Backend performans optimizasyonu ve veritabanı sorgu verimliliği
+- ✅ Pytest ile uçtan uca (E2E) ve birim test senaryolarının kodlanması
+- ✅ API güvenliği, veri şifreleme ve sistem açıklarının denetlenmesi
+- ✅ Uygulamanın Dockerize edilmesi ve CI/CD (Sürekli Entegrasyon) süreçlerinin yönetimi
+
+**💻 Geliştirdiği Özellikler:**
+- **Hata İzleme ve Kayıt (Logging) Modülü**: Sistemdeki tüm teknik hataları anlık yakalayan yapı
+- **Otomatik Test Suiti**: Yeni kod eklendiğinde sistemin bozulmadığını denetleyen otomatik testler
+- **Gelişmiş API Katmanı**: Frontend ve AI servisleri arasında yüksek hızlı veri transferi sağlayan optimize edilmiş uç noktalar
+
 ## 🚀 Özellikler
 
 ### 🎯 Temel Özellikler
@@ -517,4 +532,5 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için [LICENSE](
 [![GitHub issues](https://img.shields.io/github/issues/polytalk-team/polytalk)](https://github.com/polytalk-team/polytalk/issues)
 
 </div> 
+
 

@@ -112,6 +112,9 @@
 - **Otomatik Test Suiti**: Yeni kod eklendiğinde sistemin bozulmadığını denetleyen otomatik testler
 - **Gelişmiş API Katmanı**: Frontend ve AI servisleri arasında yüksek hızlı veri transferi sağlayan optimize edilmiş uç noktalar
 
+
+---
+
 ## 🚀 Özellikler
 
 ### 🎯 Temel Özellikler
@@ -532,5 +535,6 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için [LICENSE](
 [![GitHub issues](https://img.shields.io/github/issues/polytalk-team/polytalk)](https://github.com/polytalk-team/polytalk/issues)
 
 </div> 
+
 
 

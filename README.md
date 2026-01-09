@@ -39,6 +39,7 @@
 | **Esranur Karakaya** | 🖥️ Backend & Database | Veritabanı tasarımı, API geliştirme, Admin paneli | Python, Flask, SQLAlchemy, SQLite |
 | **Sıla Kısa** | 🎨 Frontend & UI/UX | Web arayüzü, Responsive tasarım, Kullanıcı deneyimi | HTML5, CSS3, JavaScript, Bootstrap |
 | **Mert Ergün** | 🤖 AI & Features | AI entegrasyonu, Chatbot, Veri analizi | Google Gemini, NLP, Matplotlib |
+| **Dilde Gül Düzgün** | ⚙️ Software Architect | Sistem mimarisi, Refactoring, Güvenlik ve Test | Python, Pytest, Docker, Redis |
 
 </div>
 
@@ -516,3 +517,4 @@ Bu proje **MIT Lisansı** altında lisanslanmıştır. Detaylar için [LICENSE](
 [![GitHub issues](https://img.shields.io/github/issues/polytalk-team/polytalk)](https://github.com/polytalk-team/polytalk/issues)
 
 </div> 
+
